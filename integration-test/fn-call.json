@@ -1,0 +1,4 @@
+{
+  "code_file": "../target/wasm32-wasip1/release/basm_rust_sdk_integration_test.wasm",
+  "function": "hello_world"
+}
