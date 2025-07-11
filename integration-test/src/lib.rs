@@ -1,4 +1,9 @@
-use basm_rust_sdk::{host_log, io::{output_data, HostWriter, LogWriter}, log, memory::{leak_to_shared_memory, FatPointer}};
+use basm_rust_sdk::{
+    host_log,
+    io::{output_data, HostWriter, LogWriter},
+    log,
+    memory::FatPointer
+};
 use std::io::Write;
 
 #[no_mangle]
