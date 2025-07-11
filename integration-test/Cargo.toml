@@ -12,3 +12,10 @@ basm-rust-sdk = { path = "../basm-rust-sdk" }
 
 [profile.release]
 opt-level = "s"
+
+[target.wasm32-wasip1]
+rustflags = [
+    "-C", "link-arg=--export=malloc",
+    "-C", "link-arg=--export=free",
+    "-C", "link-arg=-zstack-size=65536"
+]
