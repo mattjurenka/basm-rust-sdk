@@ -1,0 +1,9 @@
+[build]
+target = "wasm32-wasip1"
+
+[target.wasm32-wasip1]
+rustflags = [
+    "-C", "link-arg=--export=malloc",
+    "-C", "link-arg=--export=free",
+    "-C", "link-arg=-zstack-size=65536"
+]
