@@ -1,4 +1,6 @@
-use std::{default, io::Write, sync::{Arc, Mutex}};
+use std::io::Write;
+
+use serde::Deserialize;
 
 use crate::memory::{leak_to_shared_memory, FatPointer};
 
@@ -68,4 +70,11 @@ macro_rules! host_log {
 
 pub fn output_data(value: &[u8]) -> FatPointer {
     leak_to_shared_memory(value)
+}
+
+#[derive(Deserialize, Debug)]
+pub struct HostResult<T> {
+    pub ok: bool,
+    pub error: String,
+    pub value: T
 }
