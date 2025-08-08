@@ -3,6 +3,7 @@ use proc_macro::TokenStream;
 use quote::{quote};
 use syn::{parse_macro_input, ItemFn, TypePath};
 
+// secret and input type should be optional and derived from ctx type if possible.
 #[derive(Debug, FromMeta)]
 struct EntrypointArgs {
     secret_type: TypePath,
@@ -25,18 +26,8 @@ pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
     let secret_type = &parsed_args.secret_type;
 
     let input = parse_macro_input!(input as ItemFn);
-
     let sig = &input.sig;
-
     let fn_name = &sig.ident.clone();
-
-    let output = &sig.output;
-    
-    let body = &input.block;
-
-
-    // ensure that the function has the correct signature, with Context and returning Serializable O
-    // function should be generic accross I, S and O
 
     quote! {
         #[unsafe(no_mangle)]

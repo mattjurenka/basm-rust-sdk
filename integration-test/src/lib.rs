@@ -1,10 +1,7 @@
-use basm_rust_sdk::{
-    host_log, io::{output_data, Context, HostWriter, LogWriter}, log, memory::FatPointer,
-};
+use basm_rust_sdk::{attestation::{verify_attestation, EnclaveMeasurement}, http::send_http_request, prelude::*};
 
-use basm_rust_sdk_macros::bky_entrypoint;
 use serde::{Serialize, Deserialize};
-use std::io::Write;
+use std::{collections::BTreeMap, io::Write};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InputJson {
@@ -50,34 +47,34 @@ pub fn hello_world(ctx: Context<String, SecretJson>) -> OutputJson {
         ctx.input
     );
 
-    //let result = send_http_request(
-    //    "GET".into(),
-    //    "https://dogapi.dog/api/v2/breeds".into(),
-    //    &HashMap::from([
-    //        ("Content-Type".into(), vec!["application/json".into()]),
-    //        ("User-Agent".into(), vec!["Basm Rust SDK Test Client".into()])
-    //    ]),
-    //    &[]
-    //);
-    //host_log!(
-    //    "HTTP Request Result: {:?}",
-    //    result
-    //);
+    let result = send_http_request(
+        "GET".into(),
+        "https://dogapi.dog/api/v2/breeds".into(),
+        &BTreeMap::from([
+            ("Content-Type".into(), vec!["application/json".into()]),
+            ("User-Agent".into(), vec!["Basm Rust SDK Test Client".into()])
+        ]),
+        &[]
+    );
+    host_log!(
+        "HTTP Request Result: {:?}",
+        result
+    );
 
-    //let attestation_result = verify_attestation(
-    //    ENCLAVE_ATTESTED_PUBKEY.into(),
-    //    TRANSITIVE_CLAIMS.into(),
-    //    Vec::from([
-    //        EnclaveMeasurement {
-    //            platform: "plain".into(),
-    //            code: "plain".into()
-    //        },
-    //    ])
-    //);
-    //host_log!(
-    //    "Attestation Result {:?}",
-    //    attestation_result
-    //);
+    let attestation_result = verify_attestation(
+        ENCLAVE_ATTESTED_PUBKEY.into(),
+        TRANSITIVE_CLAIMS.into(),
+        Vec::from([
+            EnclaveMeasurement {
+                platform: "plain".into(),
+                code: "plain".into()
+            },
+        ])
+    );
+    host_log!(
+        "Attestation Result {:?}",
+        attestation_result
+    );
 
     host_log!(
         "Printing secrets for debug: {:?}",
