@@ -1,0 +1,1 @@
+cat fn-call.json | bky-as attest-fn-call --config ./bky-config.toml

@@ -78,3 +78,9 @@ pub struct HostResult<T> {
     pub error: String,
     pub value: T
 }
+
+#[derive(Deserialize, Debug)]
+pub struct Context<I=(), S=()> {
+    pub input: I,
+    pub secrets: S
+}

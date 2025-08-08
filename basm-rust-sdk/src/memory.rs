@@ -1,6 +1,7 @@
 use core::alloc::Layout;
 use std::slice::from_raw_parts;
 
+#[derive(Debug, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct FatPointer(pub u64);
 

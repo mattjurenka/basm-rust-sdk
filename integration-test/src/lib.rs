@@ -1,25 +1,19 @@
 use basm_rust_sdk::{
-    host_log, io::{output_data, HostWriter, LogWriter}, log, memory::FatPointer
+    host_log, io::{output_data, Context, HostWriter, LogWriter}, log, memory::FatPointer,
 };
 
+use basm_rust_sdk_macros::bky_entrypoint;
 use serde::{Serialize, Deserialize};
 use std::io::Write;
 
-pub struct Context<I=(), S=()> {
-    input: I,
-    secrets: S
-}
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InputJson {
-    x: String,
-    y: u64
+    data: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct SecretJson {
-    privkey: String,
-    api_key: String
+    password: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -37,21 +31,23 @@ const TRANSITIVE_CLAIMS: &str = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA
 // write readme
 // change name to community
 // record video
-// write bky_function macro
-// add workspace commands
+// improve panic handler
+// add custom serializers to bky_entrypoint
+// infer secret type from context type
 
-#[no_mangle]
-pub extern "C" fn hello_world(input_ptr: FatPointer, secret_ptr: FatPointer) -> FatPointer {
-//#[bky_function]
-//pub fn hello_world(ctx: Context<InputJson, SecretJson>) -> OutputJson {
+#[bky_entrypoint(
+    secret_type=SecretJson,
+    input_type=String,
+)]
+pub fn hello_world(ctx: Context<String, SecretJson>) -> OutputJson {
     log!(
         "Formatted Log Output, {}",
         32
     );
-    log!(
-        "Logging input {}",
-        str::from_utf8(&input_ptr.copy_data()).unwrap()
-        //serde_json::to_string(&ctx.input).unwrap()
+
+    host_log!(
+        "Logging input {:?}",
+        ctx.input
     );
 
     //let result = send_http_request(
@@ -84,14 +80,14 @@ pub extern "C" fn hello_world(input_ptr: FatPointer, secret_ptr: FatPointer) -> 
     //);
 
     host_log!(
-        "Printing secrets for debug: {}",
-        str::from_utf8(&secret_ptr.copy_data()).unwrap()
-        //serde_json::to_string(&ctx.secrets).unwrap()
+        "Printing secrets for debug: {:?}",
+        ctx.secrets
     );
     
+    let rand_number = rand::random::<u64>();
     host_log!(
         "Printing a random number: {}",
-        rand::random::<u64>()
+        rand_number
     );
     host_log!(
         "Printing a timestamp: {}",
@@ -101,8 +97,8 @@ pub extern "C" fn hello_world(input_ptr: FatPointer, secret_ptr: FatPointer) -> 
             .as_nanos()
     );
 
-    return output_data("Output of the fn!".as_bytes());
-    //OutputJson {
-        //error: String::from(""), data: 256
-    //}
+    OutputJson {
+        error: String::new(),
+        data: rand_number
+    }
 }
