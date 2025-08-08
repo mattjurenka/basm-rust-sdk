@@ -1,3 +1,5 @@
+#![no_main]
+
 use basm_rust_sdk::{attestation::{verify_attestation, EnclaveMeasurement}, http::send_http_request, prelude::*};
 
 use serde::{Serialize, Deserialize};
@@ -29,14 +31,9 @@ const TRANSITIVE_CLAIMS: &str = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA
 // change name to community
 // record video
 // improve panic handler
-// add custom serializers to bky_entrypoint
-// infer secret type from context type
 
-#[bky_entrypoint(
-    secret_type=SecretJson,
-    input_type=String,
-)]
-pub fn hello_world(ctx: Context<String, SecretJson>) -> OutputJson {
+#[bky_entrypoint]
+pub fn hello_world(ctx: Context<(), SecretJson>) -> OutputJson {
     log!(
         "Formatted Log Output, {}",
         32
