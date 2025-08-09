@@ -28,6 +28,27 @@ pub enum HttpRequestError {
     RequestFailed(String)
 }
 
+/// Sends an HTTP request to the host environment and returns the result.
+/// An HttpRequestError implies that there was some issue with sending or
+/// receiving the request or response.
+/// 
+/// The url, method, headers, and body are serialized into JSON before being
+/// sent to the host.
+/// 
+/// Example:
+/// ```
+/// let result = send_http_request(
+///     "GET".into(),
+///     "https://my-example-api.example.com/api/v2/test".into(),
+///     &BTreeMap::from([
+///         ("Content-Type".into(), vec!["application/json".into()]),
+///         ("Authorization".into(), vec!["Bearer mytoken".into()])
+///     ]),
+///     &[]
+/// );
+/// 
+/// log!("HTTP Request Result: {:?}", result);
+/// ```
 pub fn send_http_request(
     method: String,
     url: String,
@@ -45,7 +66,7 @@ pub fn send_http_request(
         .map_err(|e| HttpRequestError::BadSerialization(e))?;
     let input_ptr = leak_to_shared_memory(serialized_input.as_bytes());
     let output_ptr = unsafe { httpRequest(input_ptr.offset(), input_ptr.size()) };
-    let data = output_ptr.copy_data();
+    let data = unsafe { output_ptr.copy_data() };
 
     let host_result = serde_json::from_slice::<HostResult<HttpRequestOutput>>(&data)
         .map_err(|e| HttpRequestError::BadDeserialization(e))?;

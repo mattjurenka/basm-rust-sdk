@@ -30,6 +30,23 @@ pub struct EnclaveMeasurement {
     pub code: String
 }
 
+/// Verifies the attestation of an enclave using the provided public key and transitive claims.
+/// 
+/// Example:
+/// ```
+/// let attestation_result = verify_attestation(
+///     ENCLAVE_ATTESTED_PUBKEY.into(),
+///     TRANSITIVE_CLAIMS.into(),
+///     Vec::from([
+///         EnclaveMeasurement {
+///             platform: "plain".into(),
+///             code: "plain".into()
+///         },
+///     ])
+/// );
+///
+/// log!("Attestation Result {:?}", attestation_result);
+/// ```
 pub fn verify_attestation(
     enclave_attested_pubkey: String,
     transitive_attestation: String,
@@ -46,7 +63,7 @@ pub fn verify_attestation(
 
     let input_ptr = leak_to_shared_memory(serialized_input.as_bytes());
     let output_ptr = unsafe { verifyAttestation(input_ptr.offset(), input_ptr.size()) };
-    let data = output_ptr.copy_data();
+    let data = unsafe { output_ptr.copy_data() };
 
     let host_result = serde_json::from_slice::<HostResult<AttestationOutput>>(&data)
         .map_err(|e| AttestationError::BadDeserialization(e))?;

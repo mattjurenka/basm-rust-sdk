@@ -2,7 +2,7 @@ use std::io::Write;
 
 use serde::Deserialize;
 
-use crate::memory::{leak_to_shared_memory, FatPointer};
+use crate::memory::leak_to_shared_memory;
 
 #[link(wasm_import_module = "env")]
 extern "C" {
@@ -10,12 +10,13 @@ extern "C" {
     pub fn consoleLog(offset: u32, size: u32);
 }
 
+/// A writer that buffers log output and sends it to the host environment
+/// to be included in the attestation.
 #[derive(Default)]
 pub struct LogWriter {
     buffer: Vec<u8>
 }
 
-// assumes that data will be well within what u32s are capable of
 impl Write for LogWriter {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         self.buffer.extend_from_slice(buf);
@@ -30,6 +31,14 @@ impl Write for LogWriter {
     }
 }
 
+/// Basically a print! macro for sending logs to be included in the attestation.
+/// 
+/// Example:
+/// ```
+/// log!("Formatted Log Output, {}", 32);
+/// ```
+/// 
+/// Unlike print! this will flush the output immediately after every call.
 #[macro_export]
 macro_rules! log {
     ($fmt:expr $(, $arg:expr)*) => {
@@ -39,12 +48,13 @@ macro_rules! log {
     };
 }
 
+/// A writer that buffers log output and sends it to the host environment
+/// to be printed to the console.
 #[derive(Default)]
 pub struct HostWriter {
     buffer: Vec<u8>
 }
 
-// assumes that data will be well within what u32s are capable of
 impl Write for HostWriter {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         self.buffer.extend_from_slice(buf);
@@ -59,6 +69,14 @@ impl Write for HostWriter {
     }
 }
 
+/// Basically a print! macro for sending logs that will be printed to the console.
+/// 
+/// Example:
+/// ```
+/// host_log!("Formatted Log Output, {}", 32);
+/// ```
+/// 
+/// Unlike print! this will flush the output immediately after every call.
 #[macro_export]
 macro_rules! host_log {
     ($fmt:expr $(, $arg:expr)*) => {
@@ -68,10 +86,8 @@ macro_rules! host_log {
     };
 }
 
-pub fn output_data(value: &[u8]) -> FatPointer {
-    leak_to_shared_memory(value)
-}
-
+/// Host functions tend to use this result type in JSON format to return data to the program.
+/// In the case of an error, the value of `value` will be zeroed.
 #[derive(Deserialize, Debug)]
 pub struct HostResult<T> {
     pub ok: bool,
@@ -79,6 +95,7 @@ pub struct HostResult<T> {
     pub value: T
 }
 
+/// Context for the entrypoint function, containing the input and secrets.
 #[derive(Deserialize, Debug)]
 pub struct Context<I=(), S=()> {
     pub input: I,

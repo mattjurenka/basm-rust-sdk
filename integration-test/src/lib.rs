@@ -26,11 +26,12 @@ const TRANSITIVE_CLAIMS: &str = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA
 
 // TODO:
 // add testing for everything
-// write docs
+// finish comments
+// upload to crates.io
 // write readme
 // change name to community
 // record video
-// improve panic handler
+// Try to make serialization optional
 
 #[bky_entrypoint]
 pub fn hello_world(ctx: Context<(), SecretJson>) -> OutputJson {

@@ -3,7 +3,6 @@ use proc_macro::TokenStream;
 use quote::{quote};
 use syn::{parse_macro_input, ItemFn, Signature, Type};
 
-// secret and input type should be optional and derived from ctx type if possible.
 #[derive(Debug, FromMeta)]
 struct EntrypointArgs {
     #[darling(default="default_json_deserializer_fn")]
@@ -100,6 +99,7 @@ fn extract_context_types(sig: &Signature) -> Result<(Type, Type), syn::Error> {
     }
 }
 
+/// Serves as entrypoint for a function that can be called from the host environment.
 #[proc_macro_attribute]
 pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
     let attr_args = match NestedMeta::parse_meta_list(args.into()) {
@@ -138,8 +138,8 @@ pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
                 std::process::abort();
             }));
 
-            let input_data = input_ptr.copy_data();
-            let secret_data = secret_ptr.copy_data();
+            let input_data = unsafe { input_ptr.copy_data() };
+            let secret_data = unsafe { secret_ptr.copy_data() };
 
             let input_str = str::from_utf8(&input_data).unwrap();
             let input: #input_type = #input_deserializer(input_str)
@@ -158,7 +158,7 @@ pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
 
             let x = #output_serializer(&output)
                 .expect("Failed to serialize output into JSON");
-            basm_rust_sdk::memory::leak_to_shared_memory(&x.as_bytes())
+            unsafe { basm_rust_sdk::memory::leak_to_shared_memory(&x.as_bytes()) }
         }
     }.into()
 }
