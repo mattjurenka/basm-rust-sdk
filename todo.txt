@@ -1,0 +1,6 @@
+TODO
+- add testing for everything
+- finish comments
+- upload to crates.io
+- record video
+- Try to make serialization optional

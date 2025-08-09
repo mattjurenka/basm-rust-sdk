@@ -3,7 +3,7 @@
 This crate is a community maintained sdk for the Blocky Attestation Service developed by [https://www.blocky.rocks/](https://www.blocky.rocks/)
 
 ## Example
-```
+```rust
 use basm_sdk_community::{
     http::send_http_request,
     prelude::*
