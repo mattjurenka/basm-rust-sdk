@@ -4,4 +4,4 @@ pub mod http;
 pub mod attestation;
 pub mod prelude;
 
-pub use basm_rust_sdk_macros::bky_entrypoint;
+pub use basm_sdk_community_macros::bky_entrypoint;

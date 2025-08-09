@@ -1,5 +1,5 @@
 [package]
-name = "basm-rust-sdk-integration-test"
+name = "basm-sdk-community-integration-test"
 version = "0.1.0"
 authors = ["mattjurenka <matt.jurenka@comcast.net>"]
 edition = "2018"
@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-basm-rust-sdk = { path = "../basm-rust-sdk" }
+basm-sdk-community = { path = "../basm-sdk-community" }
 rand = "0.9.2"
 
 serde = { version = "1.0", features = ["derive"] }

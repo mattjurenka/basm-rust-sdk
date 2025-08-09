@@ -4,6 +4,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 use thiserror::Error;
 
+use base64::{engine::general_purpose::STANDARD, Engine};
+
 use crate::{io::HostResult, memory::{leak_to_shared_memory, FatPointer}};
 
 #[link(wasm_import_module = "env")]
@@ -71,6 +73,8 @@ pub fn send_http_request(
     let host_result = serde_json::from_slice::<HostResult<HttpRequestOutput>>(&data)
         .map_err(|e| HttpRequestError::BadDeserialization(e))?;
     
+    // TODO: deserialize from b64
+
     if host_result.ok {
         Ok(host_result.value)
     } else {

@@ -1,6 +1,6 @@
 #![no_main]
 
-use basm_rust_sdk::{attestation::{verify_attestation, EnclaveMeasurement}, http::send_http_request, prelude::*};
+use basm_sdk_community::{attestation::{verify_attestation, EnclaveMeasurement}, http::send_http_request, prelude::*};
 
 use serde::{Serialize, Deserialize};
 use std::{collections::BTreeMap, io::Write};
@@ -29,12 +29,11 @@ const TRANSITIVE_CLAIMS: &str = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA
 // finish comments
 // upload to crates.io
 // write readme
-// change name to community
 // record video
 // Try to make serialization optional
 
 #[bky_entrypoint]
-pub fn hello_world(ctx: Context<(), SecretJson>) -> OutputJson {
+pub fn hello_world(ctx: Context<String, SecretJson>) -> OutputJson {
     log!(
         "Formatted Log Output, {}",
         32

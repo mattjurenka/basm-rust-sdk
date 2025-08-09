@@ -1,5 +1,5 @@
 [package]
-name = "basm-rust-sdk"
+name = "basm-sdk-community"
 version = "0.1.0"
 authors = ["mattjurenka <matt.jurenka@comcast.net>"]
 edition = "2018"
@@ -21,7 +21,8 @@ crate-type = ["cdylib", "rlib"]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "2.0.12"
-basm-rust-sdk-macros = { path = "../basm-rust-sdk-macros" }
+basm-sdk-community-macros = { path = "../basm-sdk-community-macros" }
+base64 = "0.22.1"
 
 [dev-dependencies]
 

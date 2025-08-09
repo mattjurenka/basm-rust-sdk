@@ -1,7 +1,7 @@
 [workspace]
 resolver = "3"
 members = [
-    "basm-rust-sdk",
-    "basm-rust-sdk-macros",
+    "basm-sdk-community",
+    "basm-sdk-community-macros",
     "integration-test"
 ]

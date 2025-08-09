@@ -128,13 +128,13 @@ pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #[unsafe(no_mangle)]
         pub extern "C" fn #fn_name(
-            input_ptr: basm_rust_sdk::memory::FatPointer,
-            secret_ptr: basm_rust_sdk::memory::FatPointer
-        ) -> basm_rust_sdk::memory::FatPointer {
+            input_ptr: basm_sdk_community::memory::FatPointer,
+            secret_ptr: basm_sdk_community::memory::FatPointer
+        ) -> basm_sdk_community::memory::FatPointer {
             #input
 
             std::panic::set_hook(Box::new(|p| {
-                basm_rust_sdk::host_log!("{}", p);
+                basm_sdk_community::host_log!("{}", p);
                 std::process::abort();
             }));
 
@@ -158,7 +158,7 @@ pub fn bky_entrypoint(args: TokenStream, input: TokenStream) -> TokenStream {
 
             let x = #output_serializer(&output)
                 .expect("Failed to serialize output into JSON");
-            unsafe { basm_rust_sdk::memory::leak_to_shared_memory(&x.as_bytes()) }
+            unsafe { basm_sdk_community::memory::leak_to_shared_memory(&x.as_bytes()) }
         }
     }.into()
 }

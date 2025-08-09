@@ -3,27 +3,34 @@
 version = 4
 
 [[package]]
-name = "basm-rust-sdk"
+name = "base64"
+version = "0.22.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
+
+[[package]]
+name = "basm-sdk-community"
 version = "0.1.0"
 dependencies = [
- "basm-rust-sdk-macros",
+ "base64",
+ "basm-sdk-community-macros",
  "serde",
  "serde_json",
  "thiserror",
 ]
 
 [[package]]
-name = "basm-rust-sdk-integration-test"
+name = "basm-sdk-community-integration-test"
 version = "0.1.0"
 dependencies = [
- "basm-rust-sdk",
+ "basm-sdk-community",
  "rand",
  "serde",
  "serde_json",
 ]
 
 [[package]]
-name = "basm-rust-sdk-macros"
+name = "basm-sdk-community-macros"
 version = "0.1.0"
 dependencies = [
  "darling",
